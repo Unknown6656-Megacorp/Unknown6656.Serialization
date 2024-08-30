@@ -24,9 +24,7 @@
 
         <Authors>Unknown6656</Authors>
         <Company>Unknown6656</Company>
-        <Product>
-            Efficient Data Serializer by Unknown6656
-        </Product>
+        <Product>Efficient Data Serializer by Unknown6656</Product>
         <Description>
             An efficient, fast and easy to use data serializer for .NET.
             Aims to be used in bandwidth-limited environments.
@@ -34,20 +32,13 @@
         <Copyright>
             Copyright © 2023-$([System.DateTime]::Today.ToString(yyyy)), unknown6656
         </Copyright>
-        <PackageProjectUrl>
-            https://github.com/unknown6656/<!-- TODO -->
-        </PackageProjectUrl>
-        <RepositoryUrl>
-            https://github.com/Unknown6656/<!-- TODO -->
-        </RepositoryUrl>
-        <PackageIcon>unknown6656-logo-1024.png</PackageIcon>
+        <PackageProjectUrl>https://github.com/Unknown6656-Megacorp/Unknown6656.EfficientDataSerializer</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Unknown6656-Megacorp/Unknown6656.EfficientDataSerializer</RepositoryUrl>
+        <!--<PackageIcon>unknown6656-logo-1024.png</PackageIcon>-->
         <PackageTags>
             unknown6656;efficient;json;data;serialize;deserialize;serializer;deserializer;serialization;deserialization;efficiency;fast;easy;use;net;dotnet;.net;dot;
         </PackageTags>
-
-        <PackageId>
-            Unknown6656.EDS
-        </PackageId>
+        <PackageId>Unknown6656.EDS</PackageId>
         <IncludeSymbols>true</IncludeSymbols>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
