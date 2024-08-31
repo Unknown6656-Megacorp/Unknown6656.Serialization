@@ -6,7 +6,7 @@
 using System.Runtime.CompilerServices;
 using System;
 
-namespace Unknown6656.IO;
+namespace Unknown6656.Serialization;
 
 
 public unsafe sealed partial class UnsafeFunctionPointer

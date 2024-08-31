@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Unknown6656.IO;
+namespace Unknown6656.Serialization;
 
 
 public abstract class YAMLObject

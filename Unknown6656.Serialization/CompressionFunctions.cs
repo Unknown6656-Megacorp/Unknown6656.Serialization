@@ -6,7 +6,7 @@
 using System.IO.Compression;
 using System.IO;
 
-namespace Unknown6656.IO;
+namespace Unknown6656.Serialization;
 
 
 public abstract partial class CompressionFunction

@@ -9,7 +9,7 @@ using Unknown6656.Mathematics.Cryptography;
 using Unknown6656.Mathematics.Numerics;
 using Unknown6656.Generics;
 
-namespace Unknown6656.IO;
+namespace Unknown6656.Serialization;
 
 
 /// <completionlist cref="CompressionFunction"/>

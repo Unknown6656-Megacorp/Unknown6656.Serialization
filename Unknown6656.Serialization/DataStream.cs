@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Text.Json.Serialization;
@@ -23,13 +23,13 @@ using System;
 using Unknown6656.Mathematics.LinearAlgebra;
 using Unknown6656.Mathematics.Cryptography;
 using Unknown6656.Mathematics.Numerics;
-using Unknown6656.Controls.Console;
 using Unknown6656.Generics;
-using Unknown6656.Imaging;
 using Unknown6656.Common;
 using Unknown6656.Runtime;
+using Unknown6656.Serialization;
+using System.Runtime.Versioning;
 
-namespace Unknown6656.IO;
+namespace Unknown6656.Serialization;
 
 // TODO : obj file format
 // TODO : YAML file format

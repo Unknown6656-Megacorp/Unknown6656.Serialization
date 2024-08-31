@@ -3,7 +3,7 @@ using System.Linq;
 using System.IO;
 using System;
 
-namespace Unknown6656.IO;
+namespace Unknown6656.Serialization;
 
 
 public static class BinaryStreamExtensions
