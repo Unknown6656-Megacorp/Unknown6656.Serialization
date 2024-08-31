@@ -1,24 +1,26 @@
 ﻿using System.IO.Compression;
 using System.Text;
 
-namespace Unknown6656.EDS.Internals;
+using Unknown6656.Serialization.EDS;
+
+namespace Unknown6656.Serialization.EDS.Internals;
 
 
 internal enum EDSStringFlags
     : byte
 {
-    Null             = 0b_0000_0000,
-    Empty            = 0b_1010_0000,
-    Binary           = 0b_1010_0001,
-    Codepage_ASCII   = 0b_1010_0010,
-    Codepage_UTF8    = 0b_1010_0011,
+    Null = 0b_0000_0000,
+    Empty = 0b_1010_0000,
+    Binary = 0b_1010_0001,
+    Codepage_ASCII = 0b_1010_0010,
+    Codepage_UTF8 = 0b_1010_0011,
     Codepage_UTF16LE = 0b_1010_0100,
     Codepage_UTF16BE = 0b_1010_0101,
-    Codepage_UTF32   = 0b_1010_0110,
+    Codepage_UTF32 = 0b_1010_0110,
     Codepage_ISO8859 = 0b_1010_0111,
-    Codepage_Custom  = 0b_1010_1000,
-    SingleUTF16Char  = 0b_1010_1001,
-    UUID_128Bit      = 0b_1010_1010,
+    Codepage_Custom = 0b_1010_1000,
+    SingleUTF16Char = 0b_1010_1001,
+    UUID_128Bit = 0b_1010_1010,
 
     MASK_GZIPCompressed = 0b_0001_0000,
 }
@@ -55,7 +57,7 @@ public sealed class EDSString
         if (_bytes is [byte single])
             return (char)single;
         else if (_bytes is [byte lo, byte hi])
-            return (char)((hi << 8) | lo);
+            return (char)(hi << 8 | lo);
         else
             return ToString()?[0];
     }
@@ -92,7 +94,7 @@ public sealed class EDSString
         }
         else if (_bytes is [byte lo, byte hi])
         {
-            int codepoint = (hi << 8) | lo;
+            int codepoint = hi << 8 | lo;
 
             stream.WriteByte((byte)EDSStringFlags.SingleUTF16Char);
 
@@ -151,10 +153,8 @@ public sealed class EDSString
         if (flag is EDSStringFlags.Empty)
             return Empty;
         else if (flag is EDSStringFlags.SingleUTF16Char)
-        {
             if (Read<EDSInteger>(stream, options)?.ToUInt16() is ushort charpoint)
                 return FromChar((char)charpoint);
-        }
         else if (flag is EDSStringFlags.UUID_128Bit)
         {
             byte[] buffer = new byte[sizeof(Guid)];
@@ -219,7 +219,7 @@ public sealed class EDSString
         else
         {
             byte lo = (byte)(@char & 0xff);
-            byte hi = (byte)((@char >> 8) & 0xff);
+            byte hi = (byte)(@char >> 8 & 0xff);
 
             return FromByteArray(new[] { lo, hi }, Encoding.Unicode);
         }

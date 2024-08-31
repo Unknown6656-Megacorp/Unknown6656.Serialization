@@ -1,4 +1,4 @@
-﻿namespace Unknown6656.EDS.Internals;
+﻿namespace Unknown6656.Serialization.EDS.Internals;
 
 
 internal sealed class CompressedStringDictionary

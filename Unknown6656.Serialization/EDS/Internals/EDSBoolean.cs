@@ -1,4 +1,6 @@
-﻿namespace Unknown6656.EDS.Internals;
+﻿using Unknown6656.Serialization.EDS;
+
+namespace Unknown6656.Serialization.EDS.Internals;
 
 
 enum EDSBooleanFlags

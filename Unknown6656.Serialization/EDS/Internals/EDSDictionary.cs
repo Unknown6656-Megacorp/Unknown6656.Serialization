@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Collections;
+using Unknown6656.Serialization.EDS;
 
-namespace Unknown6656.EDS.Internals;
+namespace Unknown6656.Serialization.EDS.Internals;
 
 
 internal enum EDSDictionaryFlags

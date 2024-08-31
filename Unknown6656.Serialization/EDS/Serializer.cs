@@ -1,6 +1,9 @@
-﻿using Unknown6656.EDS.Internals;
+﻿using System;
+using System.IO;
 
-namespace Unknown6656.EDS;
+using Unknown6656.Serialization.EDS.Internals;
+
+namespace Unknown6656.Serialization.EDS;
 
 
 public static partial class Serializer

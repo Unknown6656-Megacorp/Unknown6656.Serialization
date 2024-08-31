@@ -1,4 +1,6 @@
-﻿namespace Unknown6656.EDS.Internals;
+﻿using Unknown6656.Serialization.EDS;
+
+namespace Unknown6656.Serialization.EDS.Internals;
 
 
 internal enum EDSIntegerFlags
@@ -63,7 +65,7 @@ internal sealed unsafe class EDSInteger
         Int128 value = 0;
 
         for (int i = 0; i < BigEndianBytes.Length; ++i)
-            value |= (Int128)BigEndianBytes[i] << (8 * i);
+            value |= (Int128)BigEndianBytes[i] << 8 * i;
 
         return IsNegative ? -value : value;
     }
@@ -73,7 +75,7 @@ internal sealed unsafe class EDSInteger
         UInt128 value = 0;
 
         for (int i = 0; i < BigEndianBytes.Length; ++i)
-            value |= (UInt128)BigEndianBytes[i] << (8 * i);
+            value |= (UInt128)BigEndianBytes[i] << 8 * i;
 
         return value;
     }
@@ -84,7 +86,7 @@ internal sealed unsafe class EDSInteger
 
         for (int byte_index = 0; byte_index < BigEndianBytes.Length; ++byte_index)
             for (int bit_index = 0; bit_index < 8; ++bit_index)
-                if ((BigEndianBytes[byte_index] & (1 << bit_index)) != 0)
+                if ((BigEndianBytes[byte_index] & 1 << bit_index) != 0)
                     significant_bit_count = byte_index * 8 + bit_index + 1;
 
         byte current_out_byte = (byte)(IsNegative ? EDSIntegerFlags.VALUE_Negative : EDSIntegerFlags.VALUE_NotNull);
@@ -99,12 +101,12 @@ internal sealed unsafe class EDSInteger
                 current_out_bit_shift = 7;
             }
 
-            if ((significant_bit_count - bit_index) > current_out_bit_shift)
+            if (significant_bit_count - bit_index > current_out_bit_shift)
                 current_out_byte |= (byte)(bit_index < 4 ? EDSIntegerFlags.MASK_FirstFollowingBytes : EDSIntegerFlags.MASK_FollowingBytes);
 
             --current_out_bit_shift;
 
-            bool bit = (BigEndianBytes[bit_index / 8] & (1 << (bit_index % 8))) != 0;
+            bool bit = (BigEndianBytes[bit_index / 8] & 1 << bit_index % 8) != 0;
 
             if (bit)
                 current_out_byte |= (byte)(1 << current_out_bit_shift);
@@ -128,7 +130,7 @@ internal sealed unsafe class EDSInteger
         {
             for (int bit_index = 0; bit_index < bit_shift_offset; ++bit_index)
             {
-                bool bit = (first_byte & (1 << (bit_shift_offset - 1 - bit_index))) != 0;
+                bool bit = (first_byte & 1 << bit_shift_offset - 1 - bit_index) != 0;
 
                 if (bit)
                     current_out_byte |= (byte)(1 << out_bit_index);
@@ -232,7 +234,7 @@ internal sealed unsafe class EDSInteger
         byte[] big_endian_bytes = new byte[sizeof(UInt128)];
 
         for (int i = 0; i < big_endian_bytes.Length; ++i)
-            big_endian_bytes[i] = (byte)((value >> (8 * i)) & 0xff);
+            big_endian_bytes[i] = (byte)(value >> 8 * i & 0xff);
 
         return new(negative, big_endian_bytes);
     }

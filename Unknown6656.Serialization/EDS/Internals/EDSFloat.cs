@@ -1,4 +1,6 @@
-﻿namespace Unknown6656.EDS.Internals;
+﻿using Unknown6656.Serialization.EDS;
+
+namespace Unknown6656.Serialization.EDS.Internals;
 
 
 internal enum EDSFloatFlags
@@ -191,7 +193,7 @@ public sealed unsafe class EDSFloat
                     stream.WriteByte((byte)EDSFloatFlags.VALUE_Size128Bit);
 
                     for (int i = 0; i < sizeof(UInt128); ++i)
-                        stream.WriteByte((byte)(raw >> (i * 8)));
+                        stream.WriteByte((byte)(raw >> i * 8));
                 }
                 return;
             default:
@@ -244,7 +246,7 @@ public sealed unsafe class EDSFloat
                     UInt128 raw = 0;
 
                     for (int i = 0; i < sizeof(UInt128); ++i)
-                        raw |= (UInt128)stream.ReadByte() << (i * 8);
+                        raw |= (UInt128)stream.ReadByte() << i * 8;
 
                     return FromFixed128(*(decimal*)&raw);
                 }

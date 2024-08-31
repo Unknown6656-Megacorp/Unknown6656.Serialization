@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace Unknown6656.EDS;
+namespace Unknown6656.Serialization.EDS;
 
 
 public enum Endianess
@@ -52,15 +52,15 @@ public record class SerializerOptions
 internal static class UTIL
 {
 
-    public static unsafe void HexDump(this byte[] data) => HexDump(new Span<byte>(data));
+    public static unsafe void HexDump(this byte[] data) => new Span<byte>(data).HexDump();
 
-    public static unsafe void HexDump(void* ptr, int length) => HexDump(new Span<byte>(ptr, length));
+    public static unsafe void HexDump(void* ptr, int length) => new Span<byte>(ptr, length).HexDump();
 
     public static unsafe void HexDump([NotNull] this Span<byte> data) => HexDump(data, Console.Out);
 
-    public static unsafe void HexDump(this byte[] data, TextWriter writer) => HexDump(new Span<byte>(data), writer);
+    public static unsafe void HexDump(this byte[] data, TextWriter writer) => new Span<byte>(data).HexDump(writer);
 
-    public static unsafe void HexDump(void* ptr, int length, TextWriter writer) => HexDump(new Span<byte>(ptr, length), writer);
+    public static unsafe void HexDump(void* ptr, int length, TextWriter writer) => new Span<byte>(ptr, length).HexDump(writer);
 
     public static unsafe void HexDump([NotNull] this Span<byte> data, TextWriter writer)
     {
@@ -120,10 +120,10 @@ internal static class UTIL
 
                 bool cflag;
 
-                for (int j = 0; (j < horizontal_count) && (i * horizontal_count + j < data.Length); ++j)
+                for (int j = 0; j < horizontal_count && i * horizontal_count + j < data.Length; ++j)
                 {
                     b = ptr[i * horizontal_count + j];
-                    cflag = *(int*)(ptr + (i * horizontal_count) + (j / 4) * 4) != 0;
+                    cflag = *(int*)(ptr + i * horizontal_count + j / 4 * 4) != 0;
 
                     if (colored)
                         builder.Append(b is 0 ? cflag ? "\x1b[97m" : "\x1b[90m" : "\x1b[33m");
@@ -139,10 +139,10 @@ internal static class UTIL
 
                 builder.Append("| ");
 
-                for (int j = 0; (j < horizontal_count) && (i * horizontal_count + j < data.Length); j++)
+                for (int j = 0; j < horizontal_count && i * horizontal_count + j < data.Length; j++)
                 {
                     byte @byte = ptr[i * horizontal_count + j];
-                    bool ctrl = (@byte < 0x20) || ((@byte >= 0x7f) && (@byte <= 0xa0));
+                    bool ctrl = @byte < 0x20 || @byte >= 0x7f && @byte <= 0xa0;
 
                     if (ctrl && colored)
                         builder.Append("\x1b[31m");

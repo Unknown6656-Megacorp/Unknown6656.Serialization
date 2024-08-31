@@ -4,21 +4,24 @@ using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
+using System.Linq;
+using System.IO;
+using System;
 
-namespace Unknown6656.EDS.Internals;
+namespace Unknown6656.Serialization.EDS.Internals;
 
 
 public enum EDSType
     : byte
 {
-    Null       = 0b_0000_0000,
-    Boolean    = 0b_0000_0001,
-    Integer    = 0b_0000_0010,
+    Null = 0b_0000_0000,
+    Boolean = 0b_0000_0001,
+    Integer = 0b_0000_0010,
     [EditorBrowsable(EditorBrowsableState.Never), DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    Integer_N  = 0b_0000_0011,
-    Float      = 0b_0000_0100,
-    String     = 0b_0000_0101,
-    Array      = 0b_0000_0110,
+    Integer_N = 0b_0000_0011,
+    Float = 0b_0000_0100,
+    String = 0b_0000_0101,
+    Array = 0b_0000_0110,
     Dictionary = 0b_0000_0111,
 }
 
@@ -236,10 +239,8 @@ public abstract class EDSObject
     public static EDSObject FromObject(object? other, Type? type, SerializerOptions options)
     {
         if (type != null && other?.GetType() is { } current_type)
-        {
             if (!type.IsAssignableFrom(current_type))
                 other = Convert.ChangeType(other, type);
-        }
         else
             type ??= other?.GetType() ?? typeof(object);
 
@@ -337,7 +338,7 @@ public abstract class EDSObject
                     return array;
                 }
 
-            // TODO : arbitrary data
+                // TODO : arbitrary data
         }
 
         return NETObjectToDictionary(other, options);

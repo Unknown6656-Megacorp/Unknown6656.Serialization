@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 
-namespace Unknown6656.EDS.Internals;
+using Unknown6656.Serialization.EDS;
+
+namespace Unknown6656.Serialization.EDS.Internals;
 
 
 internal enum EDSArrayFlags
@@ -61,7 +63,7 @@ public sealed class EDSArray
         EDSObject[] items = _items.ToArray(); // clone
 
         if (items.Length <= (int)EDSArrayFlags.MASK_ArrayLength)
-            stream.WriteByte((byte)(((EDSArrayFlags)items.Length & EDSArrayFlags.MASK_ArrayLength) | EDSArrayFlags.VALUE_ShortArray));
+            stream.WriteByte((byte)((EDSArrayFlags)items.Length & EDSArrayFlags.MASK_ArrayLength | EDSArrayFlags.VALUE_ShortArray));
         else
         {
             stream.WriteByte((byte)EDSArrayFlags.VALUE_LongArray);
@@ -86,7 +88,7 @@ public sealed class EDSArray
         else
             length = Read<EDSInteger>(stream, options)?.ToUInt128() ?? 0;
 
-        while (length --> 0)
+        while (length-- > 0)
             array.Append(Read(stream, options));
 
         return array;
