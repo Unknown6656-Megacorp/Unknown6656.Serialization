@@ -1,50 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <RootNamespace>Unknown6656.EDS</RootNamespace>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <LangVersion>preview</LangVersion>
-        <OutputPath>$(SolutionDir)bin</OutputPath>
+        <TargetFramework>net8.0</TargetFramework>
 
+        <LangVersion>Preview</LangVersion>
+        <EnablePreviewFeatures>True</EnablePreviewFeatures>
+        <GenerateRequiresPreviewFeaturesAttribute>False</GenerateRequiresPreviewFeaturesAttribute>
+        <Nullable>enable</Nullable>
+        <NullableContextOptions>enable</NullableContextOptions>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <AssemblyName>Unknown6656.Serialization</AssemblyName>
+        <RootNamespace>Unknown6656.Serialization</RootNamespace>
+        <OutputPath>$(SolutionDir)bin</OutputPath>
+        <DocumentationFile></DocumentationFile>
+
+        <DefineConstants>TRACE;DOUBLE_PRECISION</DefineConstants>
+        <NoWarn>1701;1702;8652</NoWarn>
+
+        <!--<TrimMode>Link</TrimMode>-->
         <Deterministic>true</Deterministic>
-        <IsPackable>true</IsPackable>
-        <!-- <TrimMode>Link</TrimMode> -->
-        <!-- <PublishTrimmed>true</PublishTrimmed> -->
         <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
         <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 
         <Authors>Unknown6656</Authors>
         <Company>Unknown6656</Company>
-        <Product>Efficient Data Serializer by Unknown6656</Product>
-        <Description>
-            An efficient, fast and easy to use data serializer for .NET.
-            Aims to be used in bandwidth-limited environments.
-        </Description>
-        <Copyright>
-            Copyright © 2023-$([System.DateTime]::Today.ToString(yyyy)), unknown6656
-        </Copyright>
-        <PackageProjectUrl>https://github.com/Unknown6656-Megacorp/Unknown6656.EfficientDataSerializer</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/Unknown6656-Megacorp/Unknown6656.EfficientDataSerializer</RepositoryUrl>
-        <!--<PackageIcon>unknown6656-logo-1024.png</PackageIcon>-->
+        <Product>Unknown6656.Serialization by Unknown6656</Product>
+        <Description>A library containing serialization and deserialization utilities.</Description>
+        <Copyright>Copyright © 2023-$([System.DateTime]::Today.ToString(yyyy)), unknown6656</Copyright>
+        <PackageProjectUrl>https://github.com/Unknown6656-Megacorp/Unknown6656.Serialization</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Unknown6656-Megacorp/Unknown6656.Serialization</RepositoryUrl>
+        <PackageIcon>unknown6656-logo-1024.png</PackageIcon>
         <PackageTags>
             unknown6656;efficient;json;data;serialize;deserialize;serializer;deserializer;serialization;deserialization;efficiency;fast;easy;use;net;dotnet;.net;dot;
         </PackageTags>
-        <PackageId>Unknown6656.EDS</PackageId>
+
+        <PackageId>Unknown6656.Serialization</PackageId>
         <IncludeSymbols>true</IncludeSymbols>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <RepositoryType>Git</RepositoryType>
-        <Version>$([System.IO.File]::ReadAllText("$(SolutionDir)version.txt"))</Version>
-        <PackageVersion>$([System.IO.File]::ReadAllText("$(SolutionDir)version.txt"))</PackageVersion>
-        <AssemblyVersion>$([System.IO.File]::ReadAllText("$(SolutionDir)version.txt"))</AssemblyVersion>
+        <Version>$([System.IO.File]::ReadAllText("$(SolutionDir)/version.txt"))</Version>
+        <AssemblyVersion>$([System.IO.File]::ReadAllText("$(SolutionDir)/version.txt"))</AssemblyVersion>
+
+        <!--<UserSecretsId>e25c8605-a6b4-42e1-9806-2eb3ebe4aa4a</UserSecretsId>-->
     </PropertyGroup>
+    <ItemGroup>
+        <None Include="unknown6656-logo-1024.png" Pack="true" PackagePath="" />
+    </ItemGroup>
 </Project>

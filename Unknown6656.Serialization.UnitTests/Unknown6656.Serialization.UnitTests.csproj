@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -15,8 +15,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Unknown6656.TestRunner" Version="1.0.5" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="../Unknown6656.EDS.CSharp/Unknown6656.EDS.CSharp.csproj" />
+        <ProjectReference Include="..\Unknown6656.Serialization\Unknown6656.Serialization.csproj" />
     </ItemGroup>
 </Project>
