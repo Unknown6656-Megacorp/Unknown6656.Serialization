@@ -5,7 +5,7 @@ using System;
 namespace Unknown6656.Serialization;
 
 
-public record HexSerializationOptions
+public record HexDumpOptions
 {
     public bool Colored { get; init; } = true;
     public bool PrintHeader { get; init; } = true;
@@ -13,19 +13,19 @@ public record HexSerializationOptions
     public bool UseUnicode { get; init; } = true;
 }
 
-public static class Visualization
+public static class HexDump
 {
-    public static void HexDump(this byte[] data) => HexDump(data, Console.Out);
+    public static void Dump(byte[] data) => Dump(data, Console.Out);
 
-    public static void HexDump(this byte[] data, TextWriter writer) => HexDump(new ReadOnlySpan<byte>(data), writer);
+    public static void Dump(byte[] data, TextWriter writer) => Dump(new ReadOnlySpan<byte>(data), writer);
 
-    public static unsafe void HexDump(void* ptr, int length) => HexDump(ptr, length, Console.Out);
+    public static unsafe void Dump(void* ptr, int length) => Dump(ptr, length, Console.Out);
 
-    public static unsafe void HexDump(void* ptr, int length, TextWriter writer) => HexDump(new ReadOnlySpan<byte>(ptr, length), writer);
+    public static unsafe void Dump(void* ptr, int length, TextWriter writer) => Dump(new ReadOnlySpan<byte>(ptr, length), writer);
 
-    public static void HexDump(this ReadOnlySpan<byte> data) => HexDump(data, Console.Out);
+    public static void Dump(ReadOnlySpan<byte> data) => Dump(data, Console.Out);
 
-    public static void HexDump(this ReadOnlySpan<byte> data, TextWriter writer, HexSerializationOptions? options = null)
+    public static void Dump(ReadOnlySpan<byte> data, TextWriter writer, HexDumpOptions? options = null)
     {
         if (data.Length == 0)
             return;
@@ -52,7 +52,7 @@ public static class Visualization
                 MaxWidth = width,
             };
 
-        writer.WriteLine(HexDumpToString(data, options));
+        writer.WriteLine(Dump(data, options));
 
         if (is_console)
         {
@@ -61,7 +61,7 @@ public static class Visualization
         }
     }
 
-    public static unsafe string HexDumpToString(this ReadOnlySpan<byte> data, HexSerializationOptions options)
+    public static unsafe string Dump(ReadOnlySpan<byte> data, HexDumpOptions options)
     {
         if (data.Length == 0)
             return "";
@@ -140,5 +140,70 @@ public static class Visualization
             }
 
         return builder.ToString();
+    }
+}
+
+public record DrunkBishopOptions
+{
+    public int Width { get; init; } = 17;
+    public int Height { get; init; } = 9;
+    public char[] Characters { get; init; } = [.." .o+=*BOX@%&#/^"];
+    public bool UseUnicode { get; init; } = true;
+}
+
+public static class DrunkBishop
+{
+    public static string Print(byte[] data, DrunkBishopOptions? options = null) => Print(new ReadOnlySpan<byte>(data), options);
+
+    public static unsafe string Print(void* ptr, int length, DrunkBishopOptions? options = null) => Print(new ReadOnlySpan<byte>(ptr, length), options);
+
+    public static string Print(ReadOnlySpan<byte> data, DrunkBishopOptions? options = null)
+    {
+        options ??= new();
+
+        byte[,] matrix = new byte[options.Height, options.Width];
+        int y = options.Height / 2;
+        int x = options.Width / 2;
+        int s, i = 0;
+
+        foreach (byte b in data)
+            for (i = 4; i-- > 0; matrix[
+                y -= s < 2 ? y > 0 ? 1 : 0 : y / (options.Height - 1) - 1,
+                x -= s % 2 > 0 ? x / (options.Width - 1) - 1 : x > 0 ? 1 : 0
+            ]++)
+                s = (b >> (i * 2)) & 3;
+
+        matrix[y, x] = 0xff;
+        matrix[options.Height / 2, options.Width / 2] = 0xfe;
+        i = 0;
+
+        string r = options.UseUnicode ? $"┌{new string('─', options.Width)}┐\n│"
+                                      : $"+{new string('-', options.Width)}+\n|";
+
+        do
+        {
+            byte value = matrix[y = i / options.Width, x = i % options.Width];
+
+            r += value switch
+            {
+                0xff => 'E',
+                0xfe => 'S',
+                byte v when v >= options.Characters.Length => options.Characters[value % (options.Characters.Length - 1) + 1],
+                _ => options.Characters[value],
+            };
+
+            if (x > options.Width - 2)
+            {
+                r += options.UseUnicode ? "│\n" : "|\n";
+
+                if (y < options.Height - 1)
+                    r += options.UseUnicode ? '│' : '|';
+                else
+                    r += options.UseUnicode ? $"└{new string('─', options.Width)}┘" : $"+{new string('-', options.Width)}+";
+            }
+        }
+        while (++i < options.Width * options.Height);
+
+        return r;
     }
 }
