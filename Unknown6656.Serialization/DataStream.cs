@@ -1,4 +1,4 @@
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Text.Json.Serialization;
@@ -42,7 +42,7 @@ namespace Unknown6656.Serialization;
 // REPR:
 //   - json
 //   - xml
-
+// TODO : add async methods
 
 
 /// <summary>
@@ -78,9 +78,9 @@ public unsafe class DataStream
     #endregion
     #region INSTANCE PROPERTIES
 
-    private int MS_Origin => (int)(_MEMORYSTREAM_ORIGIN.GetValue(this) ?? throw new InvalidOperationException());
+    private int MemoryStreamOrigin => (int)(_MEMORYSTREAM_ORIGIN.GetValue(this) ?? throw new InvalidOperationException());
 
-    public Span<byte> Data => new(GetBuffer(), MS_Origin, (int)Length);
+    public Span<byte> Data => new(GetBuffer(), MemoryStreamOrigin, (int)Length);
 
     public DataStream this[Range range] => Slice(range);
 
@@ -261,16 +261,11 @@ public unsafe class DataStream
 
     public DataStream Hash<T>() where T : HashFunction<T>, new() => Hash(new T());
 
-    public DataStream HexDump()
-    {
-        ConsoleExtensions.HexDump(ToBytes());
+    public DataStream HexDump(HexDumpOptions? options = null) => HexDump(Console.Out, options);
 
-        return this;
-    }
-
-    public DataStream HexDump(TextWriter writer)
+    public DataStream HexDump(TextWriter writer, HexDumpOptions? options = null)
     {
-        ConsoleExtensions.HexDump(ToBytes(), writer);
+        Serialization.HexDump.Dump(ToBytes(), writer, options);
 
         return this;
     }
@@ -537,59 +532,9 @@ public unsafe class DataStream
 
     public string[] ToLines(Encoding enc, string separator = "\n") => ToString(enc).SplitIntoLines(separator);
 
-    public string ToDrunkBishop() => ToDrunkBishop(17, 9);
-
-    public string ToDrunkBishop(int width, int height, string chars = " .o+=*BOX@%&#/^", bool asci_border = true)
-    {
-        byte[,] matrix = new byte[height, width];
-        int y = height / 2;
-        int x = width / 2;
-        int s, i = 0;
-
-        foreach (byte b in Data)
-            for (i = 4; i-- > 0; matrix[
-                y -= s < 2 ? y > 0 ? 1 : 0 : y / (height - 1) - 1,
-                x -= s % 2 > 0 ? x / (width - 1) - 1 : x > 0 ? 1 : 0
-            ]++)
-                s = (b >> (i * 2)) & 3;
-
-        matrix[y, x] = 0xff;
-        matrix[height / 2, width / 2] = 0xfe;
-        i = 0;
-
-        string r = asci_border ? $"+{new string('-', width)}+\n|"
-                               : $"┌{new string('─', width)}┐\n│";
-
-        do
-        {
-            byte value = matrix[y = i / width, x = i % width];
-
-            r += value switch
-            {
-                0xff => 'E',
-                0xfe => 'S',
-                byte v when v >= chars.Length => chars[value % (chars.Length - 1) + 1],
-                _ => chars[value],
-            };
-
-            if (x > width - 2)
-            {
-                r += asci_border ? "|\n" : "│\n";
-
-                if (y < height - 1)
-                    r += asci_border ? '|' : '│';
-                else
-                    r += asci_border ? $"+{new string('-', width)}+" : $"└{new string('─', width)}┘";
-            }
-        }
-        while (++i < width * height);
-
-        return r;
-    }
+    public string ToDrunkBishop(DrunkBishopOptions? options = null) => DrunkBishop.Print(ToBytes(), options);
 
     public string ToHexString(bool uppercase = true, bool spacing = false) => string.Join(spacing ? " " : "", ToBytes().Select(b => b.ToString(uppercase ? "X2" : "x2")));
-
-    public string HexDumpString(int width) => ConsoleExtensions.HexDumpToString(Data, width);
 
     public string ToBaseString(int @base)
     {
@@ -636,9 +581,10 @@ public unsafe class DataStream
     public void ToFile(FileInfo file, FileMode mode, FileAccess access = FileAccess.Write, FileShare share = FileShare.Read) =>
         ToFile(file.FullName, mode, access, share);
 
-    public Bitmap ToQOIFBitmap() => QOIF.LoadQOIFImage(this);
-
+    [SupportedOSPlatform(OS.WIN)]
     public Bitmap ToBitmap() => (Bitmap)Image.FromStream(this);
+
+    public Bitmap ToQOIFBitmap() => QOIF.LoadQOIFImage(this);
 
     public Bitmap ToRGBAEncodedBitmap()
     {

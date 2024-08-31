@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using System;
 
-using Unknown6656.Mathematics.Numerics;
-
-using Random = Unknown6656.Mathematics.Numerics.Random;
-using System.Collections;
-
-namespace Unknown6656.IO;
+namespace Unknown6656.Serialization;
 
 
 public abstract class ByteGeneratorStream
@@ -33,10 +29,17 @@ public abstract class ByteGeneratorStream
 
     public static ByteGeneratorStream Zero => FromDelegate(() => 0);
 
-    public static ByteGeneratorStream Random => FromRandom(new BuiltinRandom());
+    public static ByteGeneratorStream Random => FromRandom(new());
 
 
-    public abstract byte GetNextByte();
+    public byte Generate()
+    {
+        ++_generated;
+
+        return GetNextByte();
+    }
+
+    protected abstract byte GetNextByte();
 
     public override int Read(byte[] buffer, int offset, int count)
     {
@@ -68,7 +71,7 @@ public abstract class ByteGeneratorStream
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public static ByteGeneratorStream FromRandom(Random rng) => FromDelegate(rng.NextByte);
+    public static ByteGeneratorStream FromRandom(Random random) => FromDelegate(random is Unknown6656.Mathematics.Numerics.Random rng ? rng.NextByte : () => (byte)(random.Next() & 0xff));
 
     public static ByteGeneratorStream FromDelegate(Func<byte> generator) => new _delegated(generator);
 
@@ -77,14 +80,9 @@ public abstract class ByteGeneratorStream
     public static implicit operator ByteGeneratorStream(Func<byte> func) => FromDelegate(func);
 
 
-    private sealed class _delegated
+    private sealed class _delegated(Func<byte> next)
         : ByteGeneratorStream
     {
-        private readonly Func<byte> _next;
-
-
-        public _delegated(Func<byte> next) => _next = next;
-
-        public override byte GetNextByte() => _next();
+        protected override byte GetNextByte() => next();
     }
 }
