@@ -1,4 +1,7 @@
-﻿using Unknown6656.Serialization.EDS;
+﻿using System;
+using System.IO;
+
+using Unknown6656.Serialization.EDS;
 
 namespace Unknown6656.Serialization.EDS.Internals;
 

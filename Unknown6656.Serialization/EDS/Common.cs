@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Text;
 
 namespace Unknown6656.Serialization.EDS;

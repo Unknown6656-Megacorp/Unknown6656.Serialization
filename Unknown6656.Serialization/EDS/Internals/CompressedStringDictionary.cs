@@ -1,4 +1,8 @@
-﻿namespace Unknown6656.Serialization.EDS.Internals;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Unknown6656.Serialization.EDS.Internals;
 
 
 internal sealed class CompressedStringDictionary

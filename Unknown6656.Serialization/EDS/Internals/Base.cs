@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Linq;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 namespace Unknown6656.Serialization.EDS.Internals;
 

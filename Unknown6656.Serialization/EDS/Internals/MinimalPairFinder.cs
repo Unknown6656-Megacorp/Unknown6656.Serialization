@@ -1,4 +1,9 @@
-﻿namespace Unknown6656.Serialization.EDS.Internals;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Unknown6656.Serialization.EDS.Internals;
 
 
 internal class MinimalPairFinder<X, Y>
