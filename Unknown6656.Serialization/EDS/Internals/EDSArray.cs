@@ -42,7 +42,7 @@ public sealed class EDSArray
     }
 
 
-    private EDSArray() => _items = new();
+    private EDSArray() => _items = [];
 
     public override string ToJSON() => $"[{string.Join(", ", _items)}]";
 
@@ -58,13 +58,13 @@ public sealed class EDSArray
 
     public void RemoveAt(int index) => _items.RemoveAt(index);
 
-    public EDSObject[] ToArray() => _items.ToArray();
+    public EDSObject[] ToArray() => [.. _items];
 
-    public List<EDSObject> ToList() => _items.ToList(); // clone
+    public List<EDSObject> ToList() => [.. _items]; // clone
 
     public override void Write(Stream stream, SerializerOptions options)
     {
-        EDSObject[] items = _items.ToArray(); // clone
+        EDSObject[] items = [.. _items]; // clone
 
         if (items.Length <= (int)EDSArrayFlags.MASK_ArrayLength)
             stream.WriteByte((byte)((EDSArrayFlags)items.Length & EDSArrayFlags.MASK_ArrayLength | EDSArrayFlags.VALUE_ShortArray));

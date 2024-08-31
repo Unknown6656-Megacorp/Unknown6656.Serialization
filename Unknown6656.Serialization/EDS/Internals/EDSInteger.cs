@@ -124,7 +124,7 @@ internal sealed unsafe class EDSInteger
         if ((EDSType)(first_byte >> 5) is not (EDSType.Integer or EDSType.Integer_N))
             return Read<EDSInteger>(stream, first_byte, options);
 
-        List<byte> big_endian_bytes = new();
+        List<byte> big_endian_bytes = [];
         bool negative = ((EDSIntegerFlags)first_byte & EDSIntegerFlags.MASK_Integer) == EDSIntegerFlags.VALUE_Negative;
         int bit_shift_offset = 4;
         int out_bit_index = 0;
@@ -164,7 +164,7 @@ internal sealed unsafe class EDSInteger
         if (current_out_byte != 0)
             big_endian_bytes.Add(current_out_byte);
 
-        return new(negative, big_endian_bytes.ToArray());
+        return new(negative, [.. big_endian_bytes]);
     }
 
     public static EDSInteger? Cast(EDSObject @object)

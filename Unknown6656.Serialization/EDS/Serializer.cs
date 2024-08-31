@@ -45,8 +45,9 @@ public static partial class Serializer
 
     public static object? Deserialize(ReadOnlySpan<byte> bytes, Type? type, SerializerOptions options)
     {
-        using (MemoryStream ms = new(bytes.ToArray()))
-            return Deserialize(ms, type, options);
+        using MemoryStream ms = new(bytes.ToArray());
+
+        return Deserialize(ms, type, options);
     }
 
     public static object? Deserialize(Stream stream, Type? type) => Deserialize(stream, type, SerializerOptions.DefaultOptions);

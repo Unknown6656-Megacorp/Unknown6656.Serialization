@@ -35,7 +35,7 @@ internal class MinimalPairFinder<X, Y>
     private static (int x, int y)[] FindMinimalPairs(int[,] matrix, int N, int M)
     {
         int L = Math.Min(N, M);
-        List<(int x, int y)> pairs = new();
+        List<(int x, int y)> pairs = [];
         List<int> columns = Enumerable.Range(0, M).ToList();
         List<int> rows = Enumerable.Range(0, N).ToList();
 
@@ -59,7 +59,7 @@ internal class MinimalPairFinder<X, Y>
             rows.Remove(sel_row);
         }
 
-        return pairs.ToArray();
+        return [.. pairs];
     }
 }
 

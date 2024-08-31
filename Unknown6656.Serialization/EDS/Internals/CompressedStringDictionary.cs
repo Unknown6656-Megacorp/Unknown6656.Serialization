@@ -34,7 +34,7 @@ internal sealed class CompressedStringDictionary
     private (string[] prefixes, string[] mapping) BuildMapping()
     {
         string[] mapping = new string[SourceStrings.Length];
-        Dictionary<string, HashSet<int>> prefix_map = new();
+        Dictionary<string, HashSet<int>> prefix_map = [];
 
         for (int i = 0; i < mapping.Length; ++i)
         {
@@ -46,13 +46,13 @@ internal sealed class CompressedStringDictionary
                 if (CommonPrefix(SourceStrings[i], SourceStrings[j]) is { Length: > 1 } prefix)
                 {
                     if (!prefix_map.TryGetValue(prefix, out HashSet<int>? indices))
-                        prefix_map[prefix] = indices = new() { i };
+                        prefix_map[prefix] = indices = [i];
 
                     indices.Add(j);
                 }
         }
 
-        string[] prefixes = prefix_map.Keys.OrderByDescending(p => p.Length).ToArray();
+        string[] prefixes = [.. prefix_map.Keys.OrderByDescending(p => p.Length)];
 
         if (prefixes.Length > MAP_END - MAP_START)
             throw new NotSupportedException($"The dictionary contains more than {MAP_END - MAP_START} unique prefixes and can therefore not be efficiently compressed");

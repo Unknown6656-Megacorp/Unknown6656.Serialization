@@ -516,12 +516,12 @@ public abstract class EDSObject
 
     private static object? DictionaryToNETObject(EDSDictionary dictionary, Type target_type, SerializerOptions options)
     {
-        MemberInfo[] class_members = GetNETMembers(target_type, options).Values.ToArray();
-        string[] eds_keys = dictionary.Keys.ToArray();
+        MemberInfo[] class_members = [.. GetNETMembers(target_type, options).Values];
+        string[] eds_keys = [.. dictionary.Keys];
         MinimalPairFinder<string> pair_finder = new(Distance);
 
         Dictionary<string, string> eds_to_member = pair_finder.FindMinimalPairs(eds_keys, class_members.Select(m => m.Name));
-        Dictionary<ConstructorInfo, (Dictionary<string, string> eds_to_param, int total_sum)> constructors = new();
+        Dictionary<ConstructorInfo, (Dictionary<string, string> eds_to_param, int total_sum)> constructors = [];
 
         foreach (ConstructorInfo constructor in target_type.GetConstructors())
         {
@@ -538,7 +538,7 @@ public abstract class EDSObject
         if (constructors.Count > 0)
         {
             (ConstructorInfo constructor, (Dictionary<string, string> param_to_eds, _)) = constructors.MinBy(ctor => ctor.Value.total_sum);
-            List<object?> arguments = new();
+            List<object?> arguments = [];
 
             foreach (ParameterInfo param in constructor.GetParameters())
                 if (param_to_eds.TryGetValue(param.Name ?? "", out string? eds_key))
@@ -549,7 +549,7 @@ public abstract class EDSObject
                 else
                     arguments.Add(param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null);
 
-            instance = constructor.Invoke(arguments.ToArray());
+            instance = constructor.Invoke([.. arguments]);
         }
         else
             instance = Activator.CreateInstance(target_type);
