@@ -51,4 +51,33 @@
     <ItemGroup>
         <None Include="unknown6656-logo-1024.png" Pack="true" PackagePath="" />
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Unknown6656.Mathematics" Version="1.0.1" />
+      <PackageReference Include="Unknown6656.Runtime" Version="1.0.1" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Update="CompressionFunctions.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>CompressionFunctions.cs</LastGenOutput>
+      </None>
+      <None Update="UnsafeFunctionPointer.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>UnsafeFunctionPointer.cs</LastGenOutput>
+      </None>
+    </ItemGroup>
+    <ItemGroup>
+      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="CompressionFunctions.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>CompressionFunctions.tt</DependentUpon>
+      </Compile>
+      <Compile Update="UnsafeFunctionPointer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>UnsafeFunctionPointer.tt</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>
