@@ -581,33 +581,6 @@ public unsafe class DataStream
     public void ToFile(FileInfo file, FileMode mode, FileAccess access = FileAccess.Write, FileShare share = FileShare.Read) =>
         ToFile(file.FullName, mode, access, share);
 
-    [SupportedOSPlatform(OS.WIN)]
-    public Bitmap ToBitmap() => (Bitmap)Image.FromStream(this);
-
-    public Bitmap ToQOIFBitmap() => QOIF.LoadQOIFImage(this);
-
-    public Bitmap ToRGBAEncodedBitmap()
-    {
-        RGBAColor[] pixels = ToArray<RGBAColor>();
-        int len = pixels.Length;
-        int i = (int)Math.Sqrt(len);
-        int fac = 1;
-
-        while (i-- > 1)
-            if (len % i == 0)
-            {
-                fac = i;
-
-                break;
-            }
-
-        Bitmap bitmap = new(fac, len / fac, PixelFormat.Format32bppArgb);
-
-        bitmap.LockRGBAPixels((ptr, _, _) => pixels.CopyTo(ptr));
-
-        return bitmap;
-    }
-
     public void ToPointer<T>(T* pointer)
         where T : unmanaged
     {
@@ -952,28 +925,6 @@ public unsafe class DataStream
         // Todo
 
         throw new NotImplementedException();
-    }
-
-    public static DataStream FromBitmapAsRGBAEncoded(Bitmap bitmap) => FromArray(bitmap.ToPixelArray());
-
-    public static DataStream FromQOIFBitmap(Bitmap bitmap, QOIFVersion format_version = QOIFVersion.Original)
-    {
-        DataStream ds = new();
-
-        QOIF.SaveQOIFImage(bitmap, ds, format_version);
-
-        return ds;
-    }
-
-    public static DataStream FromBitmap(Bitmap bitmap) => FromBitmap(bitmap, ImageFormat.Png);
-
-    public static DataStream FromBitmap(Bitmap bitmap, ImageFormat format)
-    {
-        using MemoryStream ms = new();
-
-        bitmap.Save(ms, format);
-
-        return FromStream(ms);
     }
 
     public static DataStream FromStream(Stream stream, bool seek_beginning = true)
