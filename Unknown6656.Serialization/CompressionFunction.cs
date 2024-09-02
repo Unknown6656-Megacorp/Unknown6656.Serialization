@@ -29,7 +29,7 @@ public abstract partial class CompressionFunction
     public abstract byte[] UncompressData(byte[] data);
 }
 
-[Obsolete, EditorBrowsable(EditorBrowsableState.Never)]
+[Obsolete(null, true), EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class RLECompression
     : CompressionFunction
 {
@@ -109,10 +109,10 @@ public sealed class RLECompression
         int count = (int)input[0];
 
         for (int i = 0; i < count; ++i)
-            dic[256 + i] = input[i + 1].InternalBytes;
+            dic[256 + i] = input[i + 1].Serialize();
 
         for (int i = count + 1; i < input.Count; ++i)
-            output.AddRange(input[i] < 256 ? input[i].InternalBytes : dic[input[i]]);
+            output.AddRange(input[i] < 256 ? input[i].Serialize() : dic[input[i]]);
 
         return [.. output];
     }
