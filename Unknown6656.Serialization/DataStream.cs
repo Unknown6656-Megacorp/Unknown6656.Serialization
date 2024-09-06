@@ -7,13 +7,11 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.Text.Json;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Net.Mime;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Net;
@@ -22,12 +20,9 @@ using System;
 
 using Unknown6656.Mathematics.LinearAlgebra;
 using Unknown6656.Mathematics.Cryptography;
-using Unknown6656.Mathematics.Numerics;
 using Unknown6656.Generics;
-using Unknown6656.Common;
 using Unknown6656.Runtime;
-using Unknown6656.Serialization;
-using System.Runtime.Versioning;
+using Unknown6656.Common;
 
 namespace Unknown6656.Serialization;
 
@@ -124,7 +119,7 @@ public unsafe class DataStream
     public override byte[] GetBuffer() => (byte[])(_MEMORYSTREAM_BUFFER.GetValue(this) ?? throw new InvalidOperationException());
 
     public T ReadAt<T>(long index)
-        where T : unmanaged
+        where T : struct
     {
         byte[] bytes = new byte[sizeof(T)];
         long pos = Position;
@@ -137,22 +132,25 @@ public unsafe class DataStream
             return *(T*)ptr;
     }
 
-    public T ReadAt<T>(Index index) where T : unmanaged => ReadAt<T>((long)index.GetOffset((int)Length));
+    public T ReadAt<T>(Index index)
+        where T : struct => ReadAt<T>((long)index.GetOffset((int)Length));
 
     public DataStream ReadAt<T>(long index, out T value)
-        where T : unmanaged
+        where T : struct
     {
         value = ReadAt<T>(index);
 
         return this;
     }
 
-    public DataStream ReadAt<T>(Index index, out T value) where T : unmanaged => ReadAt((long)index.GetOffset((int)Length), out value);
+    public DataStream ReadAt<T>(Index index, out T value)
+        where T : struct => ReadAt((long)index.GetOffset((int)Length), out value);
 
-    public DataStream WriteAt<T>(Index index, T value) where T : unmanaged => WriteAt((long)index.GetOffset((int)Length), value);
+    public DataStream WriteAt<T>(Index index, T value)
+        where T : struct => WriteAt((long)index.GetOffset((int)Length), value);
 
     public DataStream WriteAt<T>(long index, T value)
-        where T : unmanaged
+        where T : struct
     {
         byte[] bytes = new byte[sizeof(T)];
         byte* ptr = (byte*)&value;
@@ -389,7 +387,7 @@ public unsafe class DataStream
     public string? ReadNullable() => ReadBoolean() ? ReadUTF16String() : null;
 
     public void WriteNullable<T>(T? data)
-        where T : unmanaged
+        where T : struct
     {
         Write(data.HasValue);
 
@@ -397,10 +395,10 @@ public unsafe class DataStream
             WriteUnmanaged(data.Value);
     }
 
-    public T? ReadNullable<T>() where T : unmanaged => ReadBoolean() ? ReadUnmanaged<T>() : null;
+    public T? ReadNullable<T>() where T : struct => ReadBoolean() ? ReadUnmanaged<T>() : null;
 
     public unsafe void WriteUnmanaged<T>(T data)
-        where T : unmanaged
+        where T : struct
     {
         byte* ptr = (byte*)&data;
         ReadOnlySpan<byte> rspan = new(ptr, sizeof(T));
@@ -409,7 +407,7 @@ public unsafe class DataStream
     }
 
     public unsafe T ReadUnmanaged<T>()
-        where T : unmanaged
+        where T : struct
     {
         Span<byte> span = new byte[sizeof(T)];
 
@@ -420,7 +418,7 @@ public unsafe class DataStream
     }
 
     public unsafe void WriteCollection<T>(IEnumerable<T> data)
-        where T : unmanaged
+        where T : struct
     {
         T[] array = data as T[] ?? data.ToArray();
 
@@ -431,7 +429,7 @@ public unsafe class DataStream
     }
 
     public unsafe void WriteCollection<T>(IEnumerable<IEnumerable<T>> data)
-        where T : unmanaged
+        where T : struct
     {
         IEnumerable<T>[] array = data as IEnumerable<T>[] ?? data.ToArray();
 
@@ -442,7 +440,7 @@ public unsafe class DataStream
     }
 
     public unsafe void WriteCollection<T>(IEnumerable<IEnumerable<IEnumerable<T>>> data)
-        where T : unmanaged
+        where T : struct
     {
         IEnumerable<IEnumerable<T>>[] array = data as IEnumerable<IEnumerable<T>>[] ?? data.ToArray();
 
@@ -453,7 +451,7 @@ public unsafe class DataStream
     }
 
     public unsafe T[] ReadCollection<T>()
-        where T : unmanaged
+        where T : struct
     {
         T[] array = new T[ReadInt()];
 
@@ -464,7 +462,7 @@ public unsafe class DataStream
     }
 
     public unsafe T[][] ReadJaggedCollection2D<T>()
-        where T : unmanaged
+        where T : struct
     {
         T[][] array = new T[ReadInt()][];
 
@@ -475,7 +473,7 @@ public unsafe class DataStream
     }
 
     public unsafe T[][][] ReadJaggedCollection3D<T>()
-        where T : unmanaged
+        where T : struct
     {
         T[][][] array = new T[ReadInt()][][];
 
@@ -582,7 +580,7 @@ public unsafe class DataStream
         ToFile(file.FullName, mode, access, share);
 
     public void ToPointer<T>(T* pointer)
-        where T : unmanaged
+        where T : struct
     {
         byte* dst = (byte*)pointer;
 
@@ -593,7 +591,7 @@ public unsafe class DataStream
     public byte[] ToBytes() => Data.ToArray();
 
     public T ToUnmanaged<T>()
-        where T : unmanaged
+        where T : struct
     {
         T t = default;
 
@@ -603,7 +601,7 @@ public unsafe class DataStream
     }
 
     public T[] ToArray<T>()
-        where T : unmanaged
+        where T : struct
     {
         byte[] arr = ToBytes();
 
@@ -620,12 +618,12 @@ public unsafe class DataStream
         }
     }
 
-    public T[][] ToJaggedArray2D<T>() where T : unmanaged => ToBinaryReader().ReadJaggedCollection2D<T>();
+    public T[][] ToJaggedArray2D<T>() where T : struct => ToBinaryReader().ReadJaggedCollection2D<T>();
 
-    public T[][][] ToJaggedArray3D<T>() where T : unmanaged => ToBinaryReader().ReadJaggedCollection3D<T>();
+    public T[][][] ToJaggedArray3D<T>() where T : struct => ToBinaryReader().ReadJaggedCollection3D<T>();
 
     public T[][][][] ToJaggedArray4D<T>()
-        where T : unmanaged
+        where T : struct
     {
         BinaryReader reader = ToBinaryReader();
         int size = reader.ReadInt32();
@@ -638,7 +636,7 @@ public unsafe class DataStream
     }
 
     public T[,] ToMultiDimensionalArray2D<T>()
-        where T : unmanaged
+        where T : struct
     {
         DataStream[] sources = ToArrayOfSources();
         int dim0 = sources[0].ToUnmanaged<int>();
@@ -652,7 +650,7 @@ public unsafe class DataStream
     }
 
     public T[,,] ToMultiDimensionalArray3D<T>()
-        where T : unmanaged
+        where T : struct
     {
         DataStream[] sources = ToArrayOfSources();
         int dim0 = sources[0].ToUnmanaged<int>();
@@ -667,7 +665,7 @@ public unsafe class DataStream
     }
 
     public T[,,,] ToMultiDimensionalArray4D<T>()
-        where T : unmanaged
+        where T : struct
     {
         DataStream[] sources = ToArrayOfSources();
         int dim0 = sources[0].ToUnmanaged<int>();
@@ -684,18 +682,18 @@ public unsafe class DataStream
 
     public DataStream[] ToArrayOfSources() => ToJaggedArray2D<byte>().ToArray(bytes => new DataStream(bytes));
 
-    public Span<T> ToSpan<T>() where T : unmanaged => ToArray<T>().AsSpan();
+    public Span<T> ToSpan<T>() where T : struct => ToArray<T>().AsSpan();
 
-    public ReadOnlySpan<T> ToReadOnlySpan<T>() where T : unmanaged => new(ToArray<T>());
+    public ReadOnlySpan<T> ToReadOnlySpan<T>() where T : struct => new(ToArray<T>());
 
-    public Memory<T> ToMemory<T>() where T : unmanaged => new(ToArray<T>());
+    public Memory<T> ToMemory<T>() where T : struct => new(ToArray<T>());
 
-    public ReadOnlyMemory<T> ToReadOnlyMemory<T>() where T : unmanaged => new(ToArray<T>());
+    public ReadOnlyMemory<T> ToReadOnlyMemory<T>() where T : struct => new(ToArray<T>());
 
-    public Field[,] ToCompressedMatrix<Field>() where Field : unmanaged, IField<Field> => ToCompressedStorageFormat<Field>().ToMatrix();
+    public Field[,] ToCompressedMatrix<Field>() where Field : struct, IField<Field> => ToCompressedStorageFormat<Field>().ToMatrix();
 
     public CompressedStorageFormat<Field> ToCompressedStorageFormat<Field>()
-        where Field : unmanaged, IField<Field> => CompressedStorageFormat<Field>.FromBytes(ToBytes());
+        where Field : struct, IField<Field> => CompressedStorageFormat<Field>.FromBytes(ToBytes());
 
     public UnsafeFunctionPointer ToFunctionPointer()
     {
@@ -798,16 +796,18 @@ public unsafe class DataStream
     #endregion
     #region SERIALIZATION
 
-    public static DataStream FromUnmanaged<T>(T data) where T : unmanaged => FromPointer(&data);
+    public static DataStream FromUnmanaged<T>(T data)
+        where T : struct => FromPointer(&data);
 
-    public static DataStream FromPointer<T>(T* data) where T : unmanaged => FromPointer(data, sizeof(T));
+    public static DataStream FromPointer<T>(T* data)
+        where T : struct => FromPointer(data, sizeof(T));
 
     public static DataStream FromPointer(nint pointer, int byte_count) => FromPointer((void*)pointer, byte_count);
 
     public static DataStream FromPointer(void* data, int byte_count) => FromPointer((byte*)data, byte_count);
 
     public static DataStream FromPointer<T>(T* data, int byte_count)
-        where T : unmanaged
+        where T : struct
     {
         byte[] arr = new byte[byte_count];
         byte* ptr = (byte*)data;
@@ -819,7 +819,7 @@ public unsafe class DataStream
     }
 
     public static DataStream FromArray<T>(IEnumerable<T> collection)
-        where T : unmanaged
+        where T : struct
     {
         T[] array = collection as T[] ?? collection.ToArray();
         byte[] bytes = new byte[array.Length * sizeof(T) + 4];
@@ -841,7 +841,7 @@ public unsafe class DataStream
     public static DataStream FromArrayOfSources(params DataStream[] sources) => FromJaggedArray(sources.ToArray(s => s.ToArray()));
 
     public static DataStream FromJaggedArray<T>(T[][] array)
-        where T : unmanaged
+        where T : struct
     {
         DataStream[] arrays = array.ToArray(FromArray);
 
@@ -849,7 +849,7 @@ public unsafe class DataStream
     }
 
     public static DataStream FromJaggedArray<T>(T[][][] array)
-        where T : unmanaged
+        where T : struct
     {
         DataStream[] arrays = array.ToArray(FromJaggedArray);
 
@@ -857,7 +857,7 @@ public unsafe class DataStream
     }
 
     public static DataStream FromJaggedArray<T>(T[][][][] array)
-        where T : unmanaged
+        where T : struct
     {
         DataStream[] arrays = array.ToArray(FromJaggedArray);
 
@@ -865,7 +865,7 @@ public unsafe class DataStream
     }
 
     public static DataStream FromMultiDimensionalArray<T>(T[,] array)
-        where T : unmanaged
+        where T : struct
     {
         int dim0 = array.GetLength(0);
         int dim1 = array.GetLength(1);
@@ -881,7 +881,7 @@ public unsafe class DataStream
     }
 
     public static DataStream FromMultiDimensionalArray<T>(T[,,] array)
-        where T : unmanaged
+        where T : struct
     {
         int dim0 = array.GetLength(0);
         int dim1 = array.GetLength(1);
@@ -899,7 +899,7 @@ public unsafe class DataStream
     }
 
     public static DataStream FromMultiDimensionalArray<T>(T[,,,] array)
-        where T : unmanaged
+        where T : struct
     {
         int dim0 = array.GetLength(0);
         int dim1 = array.GetLength(1);
@@ -1011,12 +1011,13 @@ public unsafe class DataStream
         FromFile(Path.GetFileName(path.LocalPath), mode, access, share);
 
     public static DataStream FromCompressedMatrix<Field>(Field[,] matrix)
-        where Field : unmanaged, IField<Field> => FromCompressedStorageFormat(new CompressedStorageFormat<Field>(matrix));
+        where Field : struct, IField<Field> => FromCompressedStorageFormat(new CompressedStorageFormat<Field>(matrix));
 
     public static DataStream FromCompressedMatrix<Field>(Algebra<Field>.IComposite2D matrix)
-        where Field : unmanaged, IField<Field> => FromCompressedStorageFormat(new CompressedStorageFormat<Field>(matrix));
+        where Field : struct, IField<Field> => FromCompressedStorageFormat(new CompressedStorageFormat<Field>(matrix));
 
-    public static DataStream FromCompressedStorageFormat<Field>(CompressedStorageFormat<Field> compressed) where Field : unmanaged, IField<Field> => FromBytes(compressed.ToBytes());
+    public static DataStream FromCompressedStorageFormat<Field>(CompressedStorageFormat<Field> compressed)
+        where Field : struct, IField<Field> => FromBytes(compressed.ToBytes());
 
     public static DataStream FromWebResource(Uri uri)
     {
@@ -1098,13 +1099,17 @@ public unsafe class DataStream
 
     public static DataStream FromBytes(byte[] bytes, int offset, int count) => FromBytes(bytes[offset..(offset + count)]);
 
-    public static DataStream FromSpan<T>(Span<T> bytes) where T : unmanaged => FromArray(bytes.ToArray());
+    public static DataStream FromSpan<T>(Span<T> bytes)
+        where T : struct => FromArray(bytes.ToArray());
 
-    public static DataStream FromSpan<T>(ReadOnlySpan<T> bytes) where T : unmanaged => FromArray(bytes.ToArray());
+    public static DataStream FromSpan<T>(ReadOnlySpan<T> bytes)
+        where T : struct => FromArray(bytes.ToArray());
 
-    public static DataStream FromMemory<T>(Memory<T> bytes) where T : unmanaged => FromArray(bytes.ToArray());
+    public static DataStream FromMemory<T>(Memory<T> bytes)
+        where T : struct => FromArray(bytes.ToArray());
 
-    public static DataStream FromMemory<T>(ReadOnlyMemory<T> bytes) where T : unmanaged => FromArray(bytes.ToArray());
+    public static DataStream FromMemory<T>(ReadOnlyMemory<T> bytes)
+        where T : struct => FromArray(bytes.ToArray());
 
     public static DataStream FromType(Type type) => FromArrayOfSources(FromUnmanaged(type.GUID), FromString(type.AssemblyQualifiedName ?? type.FullName ?? type.ToString()));
 

@@ -37,14 +37,14 @@ public static class BinaryStreamExtensions
     public static string? ReadNullable(this BinaryReader reader) => reader.ReadBoolean() ? reader.ReadString() : null;
 
     public static unsafe void WriteNullable<T>(this BinaryWriter writer, T? data)
-        where T : unmanaged
+        where T : struct
     {
         writer.Write(data is { });
         writer.WriteNative(data ?? default);
     }
 
     public static unsafe T? ReadNullable<T>(this BinaryReader reader)
-        where T : unmanaged
+        where T : struct
     {
         bool some = reader.ReadBoolean();
         T data = reader.ReadNative<T>();
@@ -53,7 +53,7 @@ public static class BinaryStreamExtensions
     }
 
     public static unsafe void WriteNative<T>(this BinaryWriter writer, T data)
-        where T : unmanaged
+        where T : struct
     {
         byte* ptr = (byte*)&data;
         ReadOnlySpan<byte> rspan = new(ptr, sizeof(T));
@@ -62,7 +62,7 @@ public static class BinaryStreamExtensions
     }
 
     public static unsafe T ReadNative<T>(this BinaryReader reader)
-        where T : unmanaged
+        where T : struct
     {
         Span<byte> span = new byte[sizeof(T)];
 
@@ -73,7 +73,7 @@ public static class BinaryStreamExtensions
     }
 
     public static unsafe void WriteCollection<T>(this BinaryWriter writer, IEnumerable<T> data)
-        where T : unmanaged
+        where T : struct
     {
         T[] array = data as T[] ?? data.ToArray();
 
@@ -84,7 +84,7 @@ public static class BinaryStreamExtensions
     }
 
     public static unsafe void WriteCollection<T>(this BinaryWriter writer, IEnumerable<IEnumerable<T>> data)
-        where T : unmanaged
+        where T : struct
     {
         IEnumerable<T>[] array = data as IEnumerable<T>[] ?? data.ToArray();
 
@@ -93,7 +93,7 @@ public static class BinaryStreamExtensions
     }
 
     public static unsafe void WriteCollection<T>(this BinaryWriter writer, IEnumerable<IEnumerable<IEnumerable<T>>> data)
-        where T : unmanaged
+        where T : struct
     {
         IEnumerable<IEnumerable<T>>[] array = data as IEnumerable<IEnumerable<T>>[] ?? data.ToArray();
 
@@ -102,7 +102,7 @@ public static class BinaryStreamExtensions
     }
 
     public static unsafe T[] ReadCollection<T>(this BinaryReader reader)
-        where T : unmanaged
+        where T : struct
     {
         T[] array = new T[reader.ReadInt32()];
 
@@ -113,7 +113,7 @@ public static class BinaryStreamExtensions
     }
 
     public static unsafe T[][] ReadJaggedCollection2D<T>(this BinaryReader reader)
-        where T : unmanaged
+        where T : struct
     {
         T[][] array = new T[reader.ReadInt32()][];
 
@@ -124,7 +124,7 @@ public static class BinaryStreamExtensions
     }
 
     public static unsafe T[][][] ReadJaggedCollection3D<T>(this BinaryReader reader)
-        where T : unmanaged
+        where T : struct
     {
         T[][][] array = new T[reader.ReadInt32()][][];
 
