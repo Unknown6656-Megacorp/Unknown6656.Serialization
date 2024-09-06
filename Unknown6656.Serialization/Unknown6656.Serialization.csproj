@@ -52,8 +52,8 @@
         <None Include="unknown6656-logo-1024.png" Pack="true" PackagePath="" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Unknown6656.Mathematics" Version="1.0.1" />
-      <PackageReference Include="Unknown6656.Runtime" Version="1.0.1" />
+      <PackageReference Include="Unknown6656.Mathematics" Version="1.0.2" />
+      <PackageReference Include="Unknown6656.Runtime" Version="1.0.2" />
     </ItemGroup>
     <ItemGroup>
       <None Update="CompressionFunctions.tt">
